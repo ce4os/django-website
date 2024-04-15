@@ -43,7 +43,7 @@ like mongodb.
 ### Step 3 - Hello world from fb_blog
 
 Enabling the app fb_blog in settings.py [x] <br>
-- Note: Django will complain without a comma after the app. According to the official documentation, there are two ways doing so:
+- Note: Django will complain without a comma after the app. According to the official documentation, there are two ways of enabling the app:
 Each string should be a dotted Python path to:
     - an application configuration class (preferred), or
     - a package containing an application.
@@ -163,3 +163,9 @@ to be rendered? Bold letters, links, citing,
 bullet points etc. pp.. 
 Whats the primary key? 
 Looking forward to work with dates again...
+
+
+#### Django ORM - creating a model for BlogPosts
+
+A blogpost has a title, a body, a time it has been created at. 
+I want to use the time the blogpost gets created at as the primary key
