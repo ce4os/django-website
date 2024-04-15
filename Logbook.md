@@ -168,4 +168,53 @@ Looking forward to work with dates again...
 #### Django ORM - creating a model for BlogPosts
 
 A blogpost has a title, a body, a time it has been created at. 
-I want to use the time the blogpost gets created at as the primary key
+I want to use the time the blogpost gets created at as the primary key. 
+This is generally not recommended since there can be issues with 
+uniqueness of a timestamp (rare case scenario). But since this is my
+own blog and not a site people other than me will use, this won't 
+be an issue. 
+
+On second thought, the primary key can just be provided by django. It
+seems to much of a huzzle to mimic fefes https://blog.fefe.de/?ts=98e3fee4
+permalinks to his blogposts just to mimic it. So a draft of the post model 
+looks like this:
+
+```python
+class Post(models.Model):
+    """A model representing a blog post"""
+    title = models.CharField(max_length=255)
+    body = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        ordering = ["-created_at"]
+```
+
+The title can be long but not to long. The body can be of arbitrary length. 
+The created_at attribute will provide a way to access blogposts in the right 
+order. The __str__ method is overwritten for easy and recocnisable representation.
+The posts will be orderd by created_at in descending order. The newest entry will always
+be on top of the database. The default for created_at was choosen so that mockposts 
+can be more conveniently created (as opposed to auto_add=True).
+
+#### Populating the database with mock data
+
+Three blogposts for today, one for yesterday, two for the day before yesterday.
+Link to detail views works. The first real problem arises:
+How do I query the database so The queryset will always contain the latest three days.
+Examples:
+Fri, Thu, Wed
+Fri, Thu, Mon
+Fri, Wed, Tue
+Fri, Wed, Mon
+Fri, Sun, Sat
+Fri, Sun, Fr
+See: TODO in fb_blog/views.py
+
+
+
+
+

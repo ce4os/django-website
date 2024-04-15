@@ -2,8 +2,13 @@
 
 {% block content %}
 
-<p>BLOCKCONTENT</p>
-<h1>Hello world</h1>
-<p>ENDBLOCK</p>
+{% for post in posts %}
+<h3>{{post.created_at|date:"D M d Y"}}</h3>
+<ul>
+<li><a href="{% url 'detail' post.id %}">[l]</a> {{post.title}}</li>
+<p>{{post.body}}</p>
+
+</ul>
+{% endfor %}
 
 {% endblock %}
