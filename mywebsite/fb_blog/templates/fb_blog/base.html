@@ -7,17 +7,18 @@
 </head>
     
 <header>
-    <h2>Zephyrs Blog</h2>
-    <b>A blog about everything and nothing</b>
-    <p style="text-align:right">IMPLEMENT SEARCHFUNCTIONALITY HERE!</p>
+    
+<h2><a href="{% url 'home' %}" style="text-decoration:none;color:black">Zephyrs Blog</a></h2>
+
+<b>A blog about everything and nothing</b>
 </header>
 <body>
+    <p style="text-align:right">IMPLEMENT SEARCH FUNCTIONALITY!</p>
     {% block content %}
 
     {% endblock %}
 </body>
 <footer>
-    <p><div style="text-align:center"><a href="/?mon=202404">ganzer Monat</a></div>
-    <div style="text-align:right">Proudly made with Django<br><a href="#">Impressum</a></div>
+<div style="text-align:right">Proudly made with Django!<br><a href="#">Impressum, Datenschutz</a></div></html>
 </footer>
 </html>

@@ -1,0 +1,21 @@
+1. Storage of blogposts
+
+It is possible to store raw HTML in the body and in the update attribute of a blogpost.
+to render the HTML this syntax can be used.
+
+{{post.body|safe}}
+{{post.update|safe}}
+
+2. Impressum
+
+3. Search functionality
+
+4. Refactor
+
+5. Test coverage
+
+6. Styling
+
+7. Deployment - Virtual Machine
+
+8. Deployment to production

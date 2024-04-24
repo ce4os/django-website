@@ -18,14 +18,10 @@ In general, the blog will have:
 
 - Blog homepage – displays the latest few entries.
 - Entry “detail” page – permalink page for a single entry.
-- Year-based archive page – displays all months with entries in the given year.
 - Month-based archive page – displays all days with entries in the given month.
-- Day-based archive page – displays all entries in the given day.
 - Search functionality 
 
-The blog will be implemented two times. One time with a function based approach 
-and one time with class based approach. 
-
+After developing the basic blog, I plan on customizing the whole project. 
 
 Installation
 ------------

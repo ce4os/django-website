@@ -2,10 +2,23 @@
 
 {% block content %}
 
-<h3>{{post.created_at|date:"D M d Y" }}</h3>
-<ul>
-<li><a href="#">[l]</a> {{post.title}}</li>
-<p>{{post.body}}</p>
-</ul>
+<h3>{{post.created_at|date:"D M d y"}}</h3>
+
+<li>
+
+
+    <a href="{% url 'detail' post.id %}">[l]</a> {{post.title}} 
+
+    {% if post.body %}
+
+        <p>{{post.body}}</p>
+    
+    {% endif %}
+
+    {% if post.update %}
+        <p>{{post.update}}</p>
+    {% endif %}
+
+</li>
 
 {% endblock %}

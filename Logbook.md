@@ -207,14 +207,252 @@ Link to detail views works. The first real problem arises:
 How do I query the database so The queryset will always contain the latest three days.
 Examples:
 Fri, Thu, Wed
-Fri, Thu, Mon
-Fri, Wed, Tue
-Fri, Wed, Mon
-Fri, Sun, Sat
 Fri, Sun, Fr
+
 See: TODO in fb_blog/views.py
 
 
+## Tue Apr 16 01:26:59 PM CEST 2024
 
+Right now I am facing several problems. Maybe a descriptin helps.
+
+1. Formatting
+
+When visiting home, every Post has a header, stating the day it was posted.
+
+Tue Apr 16 2024. 
+- Post1 
+
+Tue Apr 16 2024
+- Post2
+
+Tue Apr 16 2024 
+- Post 3
+
+This is not really elegant since some posts will be released on the same day. Desired behaviour: All blogposts for one day have a single headline.
+
+Tue Apr 16 2024
+- Post1
+- Post2
+- Post3
+
+2. Getting the right queryset
+
+The home view should provide the posts for the last three days. The last three days are not necessarily in a row. So if home_view gets called
+it should return for example:
+Tue Apr 16 2024
+- Post1
+- Post2
+Fri Apr 12 2024
+- Post1
+- Post3
+Wed Apr 10 2024
+- Post1
+
+3. Monthly view: 
+- Queryset for the whole current month
+
+4. Link to: earlier month -> How to calculate the earlier month? And how to pass the variable to the view?
+
+5. Link to: later month -> Same as above. But also
+what to do if it is a month in the future and there are no posts?
+
+6. How do I render the body of the posts? Right now there is no way to format that text in any way. But I want to be able to use HTML tags. 
+The obvious solution is to store body and Update
+As HTML files in the database. I am fairly sure
+this problem arose before and there is a built-in
+solution. 
+
+7. Impressum
+What do I need to write down there?
+
+8. Updates
+The blueprint blog: blog.fefe.de sometimes
+has updates on posts. Do I provide a 
+Update field to implement that functionality?
+
+Probably I should create a global TODO file for
+this project.
+
+
+## Sun Apr 21 03:42:49 PM CEST 2024
+
+I solved problems 1 and 2. 
+Here's the code:
+
+```python
+# models.py
+class Date(models.Model):
+    """A model representing a specific day"""
+    created_at_date = models.DateField(default=timezone.now, unique=True)
+    
+    class Meta:
+        ordering = ["-created_at_date"]
+    
+    def __str__(self):
+        return str(self.created_at_date)
+
+# views.py
+def get_home_view_queryset():
+    queryset = []
+    latest_three_days = Date.objects.all()[:3]
+    for day in latest_three_days:
+        queryset.append(Post.objects.filter(created_at_date=day))
+    return queryset
+
+
+def home_view(request):
+    queryset = get_home_view_queryset()
+    context = {"queryset":queryset}
+    return render(request, "fb_blog/home.html", context)
+```
+I created a Date model to be able to retrieve the latest 
+three days without much of a huzzle. The date is a foreign key to every blogpost and defaults to the day the
+post is created. The queryset contains the posts for the latest three days. 
+
+```html
+{% for posts in queryset %}
+
+    <h3>{{posts.0.created_at_date.created_at_date|date:"D M d Y" }}</h3>
+    
+    {% for post in posts %}
+        <ul>
+        <li><a href="{% url 'detail' post.id %}">[l]</a> {{post.title}}</li>
+        <p>{{post.body|safe}}</p>
+        {% if post.update %}
+            <p><b>Update: </b>{{post.update}}</p>
+        {% endif %}
+        </ul>
+
+    {% endfor %}
+
+{% endfor %}
+```
+
+As I progress, I realize that I started tinkering. 
+Back to square 1.
+
+I have to remind myself:
+
+"Give me six hours to chop down a tree and I will spend the first four sharpening the axe."
+ 
+## Planning phase 
+
+Blog will have:
+
+<hr>
+
+### 1. Home view
+
+- Functionality:
+    - Links to: 
+        - Month view: {% url "month" month_id=latest_post.ts|date:"Ym" %} 
+        - Impressum links to: impressum.html
+    - Shows: search functionality
+    - Every blogpost has a link to its detail view: {% url "detail" post.id %}
+
+- The home view will show all posts of the last three days with blogentries. 
+
+- The URL will look like this: mywebsite/blog/
+
+- Edgecases: 
+    
+    What is the current month here:
+
+    - Entries for the 1st of May, 30th of April, 28th of April
+    - Entries for 2nd of May, 2nd of April, 2nd of February
+    
+- Question: 
+    - How to retrieve posts for the latest three days from the database efficiently? 
+
+<hr>
+
+### 2. Detail view
+- Functionality:
+    - Links to: Whole month, home, itself, Impressum 
+    - Shows: search functionality
+- URL will look like: mywebsite/blog/detail/\<int:post_id>
+
+<hr>
+
+### 3. Monthly view
+
+- The month view will show all days with blogentries for a specific month. Identified by
+its string representation: Example: 
+    - April 2024 = 202404
+    - March 2024 = 202403
+
+- Functionality: 
+    - Links to: 
+        - earlier month {% url "month" month_id=current_month-1 %}
+        - homeview {% url "home" %}
+        - later month {% url "month" month_id = current_month + 1%}
+        {% if not queryset %}
+            <p>No entries found</p>
+        {% endif %}
+    - Shows: search functionality
+
+- URL will look like this: mywebsite/\month=202402
+
+<hr>
+
+### 4. Search functionality
+
+- Backend has to sanitize user input!
+- Searches all posts in the database for searchterm. 
+
+<hr>
+
+### 5. Impressum
+
+- Link to html file
+
+<hr>
+
+### 6. A database to store Blogentries
+
+Model of a blogpost:
+```python 
+
+class Month(models.Model):
+    """A model representing a Month"""
+    created_at = models.DateField(default=)
+
+    def __str__(self):
+        return str(self.created_at)
+
+class Day(models.Model):
+    """A model representing a day"""
+    created_at = models.DateField()
+
+class BlogPost(models.Model):
+    """A model representing a blog post"""
+    title = models.CharField()
+    body = models.TextField()
+    update = models.TextField()
+
+    created_time = models.TimeField()
+    month = models.ForeignKey()
+    day = models.ForeignKey()
+
+    class Meta:
+        ordering = ["-created_date", "-created_time"]
+
+    def __str__(self):
+        return self.title
+```
+
+<hr>
+
+### HTML Files
+
+base.html shared by all views
+
+- Title, subtitle
+- Impressum
+- Search function
+
+home.html, detail.html and month.html
+all share code for 
 
 

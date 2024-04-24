@@ -1,0 +1,33 @@
+{% extends "fb_blog/base.html" %}
+
+{% block content %}
+
+    {% if not queryset %}
+        <p>No entries found</p>
+    {% endif %}
+
+    {% for posts_per_day in queryset %}
+        <h3>{{posts_per_day.0.created_at|date:"D M d y"}}</h3>
+        <ul>
+            {% for post in posts_per_day %}
+
+                <li>
+                    <a href="{% url 'detail' post.id %}">[l]</a> {{post.title}} 
+                        {% if post.body %}
+                            <p>{{post.body}}</p>
+                        {% endif %}
+                        
+                        {% if post.update %}
+                            <p>{{post.update}}</p>
+                        {% endif %}    
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+    {% if queryset %}
+        <p><div style="text-align:center"><a href="{% url 'month' previous_month%}">earlier</a> -- <a href="{% url 'home' %}">current</a> -- <a href="{% url 'month' next_month %}">later</a></div>
+    {% else %}
+        <p><div style="text-align:center"><a href="{% url 'home' %}">home</a></div></p>
+    {% endif %}
+{% endblock %}
