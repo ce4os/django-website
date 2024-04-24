@@ -161,5 +161,6 @@ cython_debug/
 
 ##
 RawBlogposts/
+mywebsite/fb_blog/templates/fb_blog/impressum.html
 
 

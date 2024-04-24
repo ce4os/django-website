@@ -85,4 +85,7 @@ def month_view(request, month_id):
 def detail_view(request, post_id):
     post = BlogPost.objects.get(pk=post_id)
     context = {"post":post}
-    return render(request, "fb_blog/detail.html", context)    
+    return render(request, "fb_blog/detail.html", context)   
+
+def impressum(request):
+    return render(request, "fb_blog/impressum.html") 

@@ -2,23 +2,21 @@
 
 {% block content %}
 
-<h3>{{post.created_at|date:"D M d y"}}</h3>
+    <h3>{{post.created_at|date:"D M d y"}}</h3>
+        <ul>
+            <li>
+                <a href="{% url 'detail' post.id %}">[l]</a> {{post.title}} 
 
-<li>
+                {% if post.body %}
+                    <p>{{post.body}}</p>    
+                {% endif %}
 
-
-    <a href="{% url 'detail' post.id %}">[l]</a> {{post.title}} 
-
-    {% if post.body %}
-
-        <p>{{post.body}}</p>
-    
-    {% endif %}
-
-    {% if post.update %}
-        <p>{{post.update}}</p>
-    {% endif %}
-
-</li>
+                {% if post.update %}
+                    <p>{{post.update}}</p>
+                {% endif %}
+            </li>
+        </ul>
+        
+<p><div style="text-align:center"><a href="{% url 'home' %}">home</a> -- <a href="{% url 'month' post.created_at|date:'Ym' %}">whole month</a> </div></p>
 
 {% endblock %}

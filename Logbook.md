@@ -455,4 +455,23 @@ base.html shared by all views
 home.html, detail.html and month.html
 all share code for 
 
+--------------------------------------------
 
+## Wed Apr 24 01:41:20 PM CEST 2024
+
+I finished with the basic functionality today. What really gave me a headache
+was the queryset for the homeview. My solution works but is horribly ugly, awkward
+and inefficient. In general there is some redundancy in the code:
+
+- templates/fb_blog/: Home view and month view use the same template logic
+- fb_blog/views.py: get_previous_month and get_next_month look fairly similar except one uses addition and one subtractions. Both look awefully complicated for what they actually do. 
+
+Questions: 
+1. What to do with invalid urls like blog/10/, blog/detail/wrongstring? 
+
+
+## Working on TODO
+
+DRY:
+ - templates/fb_blog/: Home view and month view use the same template logic
+ Define a html file that contains the redundant logic. {% include 'path/to.html' %}

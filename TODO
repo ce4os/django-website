@@ -1,4 +1,7 @@
-1. Storage of blogposts
+1. Storage and creation of blogposts 
+
+The posts are currently created via the provided
+admin panel of django. 
 
 It is possible to store raw HTML in the body and in the update attribute of a blogpost.
 to render the HTML this syntax can be used.
@@ -8,14 +11,35 @@ to render the HTML this syntax can be used.
 
 2. Impressum
 
-3. Search functionality
+- Adapt impressum according to my own needs
+
+3. Functionality
+
+- Searchfunctionality
+    Case insensitive search for keywords (just letters -> sanitize) in all blogposts ever made. 
+
+- earlier month: You could click through until the beginning of time
+- later: You could click through until the end of time
+
 
 4. Refactor
+
+- DRY!
+    - fb_blog/views.py: get_previous_month and get_next_month look fairly similar except one uses addition and one subtractions. Both look awefully complicated for what they actually do. 
+
+- From brute to smooth:
+    - get_home_view_queryset()
+
 
 5. Test coverage
 
 6. Styling
 
+- Dark theme
+
 7. Deployment - Virtual Machine
 
 8. Deployment to production
+
+-----------------------------------------
+
