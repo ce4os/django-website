@@ -30,6 +30,9 @@ to render the HTML this syntax can be used.
 - From brute to smooth:
     - get_home_view_queryset()
 
+- Make code self documenting
+
+- Add method get_date to model of BlogPost
 
 5. Test coverage
 

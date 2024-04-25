@@ -475,3 +475,32 @@ Questions:
 DRY:
  - templates/fb_blog/: Home view and month view use the same template logic
  Define a html file that contains the redundant logic. {% include 'path/to.html' %}
+
+Beautify:
+- From brute to smooth:
+    - get_home_view_queryset():
+    Query the database for distinct dates. 
+
+Searchfunctionality:
+- Either use django forms or html forms.
+-> To use django forms, I would have to change all the views to have a form in the context that gets passed to the base.html (because the search functionality should be visibile in all views except impressum)
+Therefore, I use raw html forms in base.html
+
+
+## Thu Apr 25 03:17:26 PM CEST 2024
+
+Search functionality implemented:
+
+locations:
+
+fb_blog/templates/fb_blog/base.html
+    - form tag
+fb_blog/templates/fb_blog/search.html
+
+fb_blog/views.py
+    - search_view()
+    - assemble_posts()
+
+For now, it is a really basic search functionality. It will search for a string
+in a blogposts title, its body and its update. It does
+the trick for a single word like "Blueberry" and it is also case insensitive meaning "Cheesecake" will return all blogposts with cheesecake cheese. A searchterm like: blueberry cheesecake will return no posts...

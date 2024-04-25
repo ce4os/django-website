@@ -13,7 +13,12 @@
 <b>A blog about everything and nothing</b>
 </header>
 <body>
-    <p style="text-align:right">IMPLEMENT SEARCH FUNCTIONALITY!</p>
+    
+    <form action="{% url 'search' %}" method="GET">
+        <input type="text" id="search_term" name="q"><br><br>
+        <input type="submit" value="Search">
+    </form>   
+    
     {% block content %}
 
     {% endblock %}
