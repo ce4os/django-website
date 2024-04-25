@@ -504,3 +504,33 @@ fb_blog/views.py
 For now, it is a really basic search functionality. It will search for a string
 in a blogposts title, its body and its update. It does
 the trick for a single word like "Blueberry" and it is also case insensitive meaning "Cheesecake" will return all blogposts with cheesecake cheese. A searchterm like: blueberry cheesecake will return no posts...
+
+Update: This did not occurr due to the search functionality but due to a mistake in the assemble_posts().
+Searchterm: "blueberry cheesecake"
+Expected result: 1 post.
+Result: post did not show up.
+Reason:
+```python 
+def assemble_posts(posts: list) -> list:
+    """Assembles posts by the date they were created"""
+    arranged_posts = []
+    init_date = posts[0].created_at.date()
+    sublist = []
+    for post in posts:
+        if post.created_at.date() == init_date:
+            sublist.append(post)
+            # if post[-1].date() == init_date 
+            # and post[-1] == post[0], post did not get appended to arranged_posts
+            # solution:
+            if post == posts.last():
+                arranged_posts.append(sublist)
+        elif post.created_at.date() != init_date:
+            init_date = post.created_at.date()
+            arranged_posts.append(deepcopy(sublist))
+            sublist = []
+            sublist.append(post)
+    return arranged_posts
+```
+
+The functions seem to be overcomplicated and are hard to read -> 
+-> New TODO: Make code more self documenting!

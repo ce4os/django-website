@@ -91,6 +91,8 @@ def assemble_posts(posts: list) -> list:
     for post in posts:
         if post.created_at.date() == init_date:
             sublist.append(post)
+            if post == posts.last():
+                arranged_posts.append(sublist)
         elif post.created_at.date() != init_date:
             init_date = post.created_at.date()
             arranged_posts.append(deepcopy(sublist))
