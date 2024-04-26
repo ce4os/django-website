@@ -10,7 +10,6 @@ class BlogPost(models.Model):
     update = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
-
     def __str__(self):
         return self.title
 

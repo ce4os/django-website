@@ -34,18 +34,26 @@ def get_year_and_month_from_month_id(month_id: str) -> list:
     """Returns year and month as int from month_id string"""
     return [int(x) for x in month_id.split("-")]
 
+def assemble_posts(posts: list) -> list:
+    """Assembles posts by the date they were created"""
+    arranged_posts = []
+    init_date = posts[0].created_at.date()
+    sublist = []
+    for post in posts:
+        if post.created_at.date() == init_date:
+            sublist.append(post)
+            if post == posts.last():
+                arranged_posts.append(sublist)
+        elif post.created_at.date() != init_date:
+            init_date = post.created_at.date()
+            arranged_posts.append(deepcopy(sublist))
+            sublist = []
+            sublist.append(post)
+    return arranged_posts
 
-def get_month_view_queryset(month_id: str) -> list:
+def get_all_posts_for_a_month(year, month) -> list:
     """Get all blogposts for a specific month"""
-    year, month = get_year_and_month_from_month_id(month_id)
-    days_in_month = get_number_of_days_of_month(year, month)
-    last_day_of_month = datetime(year, month, days_in_month).date()
-    queryset = []
-    delta = timedelta(days=1)
-    for i in range(0, days_in_month):
-        if BlogPost.objects.filter(created_at__date=(last_day_of_month - delta*i)):
-            queryset.append(BlogPost.objects.filter(created_at__date=(last_day_of_month - delta*i)))
-    return queryset
+    return BlogPost.objects.filter(created_at__month=month, created_at__year=year)
     
 def get_next_month(year, month) -> str:
     if month == 12:
@@ -64,12 +72,14 @@ def get_previous_month(year, month) -> str:
     return f"{year}-{month:02d}"
 
 def month_view(request, month_id):
-    queryset = get_month_view_queryset(month_id)
     year, month = get_year_and_month_from_month_id(month_id)
-    
+    all_posts_per_month = get_all_posts_for_a_month(year, month)
+    if all_posts_per_month:
+        queryset = assemble_posts(all_posts_per_month)
+    else:
+        queryset = []
     previous_month = get_previous_month(year, month)
     next_month = get_next_month(year, month)
-    
     context = {
         "queryset":queryset, 
         "next_month":next_month,
@@ -91,23 +101,6 @@ def imprint_view(request):
 
 
 ## Logic concerning search view
-def assemble_posts(posts: list) -> list:
-    """Assembles posts by the date they were created"""
-    arranged_posts = []
-    init_date = posts[0].created_at.date()
-    sublist = []
-    for post in posts:
-        if post.created_at.date() == init_date:
-            sublist.append(post)
-            if post == posts.last():
-                arranged_posts.append(sublist)
-        elif post.created_at.date() != init_date:
-            init_date = post.created_at.date()
-            arranged_posts.append(deepcopy(sublist))
-            sublist = []
-            sublist.append(post)
-    return arranged_posts
-
 def search_view(request):
     search_term = request.GET.get("q")
     if search_term:
