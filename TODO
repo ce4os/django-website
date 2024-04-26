@@ -15,9 +15,6 @@ to render the HTML this syntax can be used.
 
 3. Functionality
 
-- Searchfunctionality
-    Case insensitive search for keywords (just letters -> sanitize) in all blogposts ever made. 
-
 - earlier month: You could click through until the beginning of time
 - later: You could click through until the end of time
 
@@ -36,14 +33,20 @@ to render the HTML this syntax can be used.
 
 5. Test coverage
 
+- Use djangos built-in test framework
+
 6. Styling
 
-- Change Title: Thu Apr 25 24 to Thu Apr 25 2024
 - Dark theme
 
 7. Deployment - Virtual Machine
 
 8. Deployment to production
+
+9. Update README.md
+
+- Update installation instructions
+- Create database with mockentries
 
 -----------------------------------------
 

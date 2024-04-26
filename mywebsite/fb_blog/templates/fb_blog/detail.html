@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h3>{{post.created_at|date:"D M d y"}}</h3>
+    <h3>{{post.created_at|date:"D M d Y"}}</h3>
         <ul>
             <li>
                 <a href="{% url 'detail' post.id %}">[l]</a> {{post.title}} 
@@ -12,7 +12,7 @@
                 {% endif %}
 
                 {% if post.update %}
-                    <p>{{post.update}}</p>
+                    <p><b>Update</b>: {{post.update}}</p>
                 {% endif %}
             </li>
         </ul>

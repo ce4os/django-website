@@ -48,6 +48,8 @@ pip install -r requirements.txt
 # run development server
 python3 manage.py runserver
 ```
+
+
 In the browser of your choice, go to:
 localhost:8000. Now you should be able to 
 explore the functionality.

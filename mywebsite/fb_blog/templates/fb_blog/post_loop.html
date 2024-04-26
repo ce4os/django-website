@@ -1,22 +1,18 @@
 {% for posts_per_day in queryset %}
-
-<h3>{{posts_per_day.0.created_at|date:"D M d y"}}</h3>
-
-<ul>
-    {% for post in posts_per_day %}
-        <li>
-            <a href="{% url 'detail' post.id %}">[l]</a> {{post.title}} 
-            {% if post.body %}
-                <p>{{post.body}}</p>
-            {% endif %}
-            
-            {% if post.update %}   
-                <p><b>Update</b>: {{post.update}}</p>
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
-
+    <h3>{{posts_per_day.0.created_at|date:"D M d Y"}}</h3>
+    <ul>
+        {% for post in posts_per_day %}
+            <li>
+                <a href="{% url 'detail' post.id %}">[l]</a> {{post.title}} 
+                {% if post.body %}
+                    <p>{{post.body}}</p>
+                {% endif %}
+                {% if post.update %}   
+                    <p><b>Update</b>: {{post.update}}</p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
 {% endfor %}
 
     

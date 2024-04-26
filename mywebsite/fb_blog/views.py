@@ -3,6 +3,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from .models import BlogPost
@@ -10,17 +11,18 @@ from .models import BlogPost
 def get_home_view_queryset() -> list:
     """Get the blogposts for the latest four days in the db"""
     queryset = []
-    latest_dates = BlogPost.objects.values('created_at__date').distinct().order_by('-created_at__date')[:4] 
+    latest_dates = BlogPost.objects.values('created_at__date').distinct().order_by('-created_at__date')[:3] 
     dates = [entry['created_at__date'] for entry in latest_dates]
     for date in dates:
         queryset.append(BlogPost.objects.filter(created_at__date=date))
     return queryset
 
+
 def home_view(request):
-    #TODO: refactor
     queryset = get_home_view_queryset()
     context = {"queryset":queryset, "month_id":queryset[0][0].created_at.date()}
     return render(request, "fb_blog/home.html", context)
+
 
 
 def get_number_of_days_of_month(year: int, month: int) -> int:
@@ -34,6 +36,7 @@ def get_month_view_queryset(month_id: str) -> list:
     days_in_month = get_number_of_days_of_month(year, month)
     last_day_of_month = datetime(year, month, days_in_month).date()
     queryset = []
+
     delta = timedelta(days=1)
     for i in range(0, days_in_month):
         if BlogPost.objects.filter(created_at__date=(last_day_of_month - delta*i)):
@@ -65,12 +68,12 @@ def month_view(request, month_id):
     previous_month = get_previous_month(month_id)
     next_month = get_next_month(month_id)
     context = {
+        "testobj":[{"key":"value"}],
         "queryset":queryset, 
         "next_month":next_month,
         "previous_month":previous_month,
         }
     return render(request, "fb_blog/month.html", context)
-
 
 def detail_view(request, post_id):
     post = BlogPost.objects.get(pk=post_id)
@@ -112,3 +115,7 @@ def search_view(request):
     else:
         context = {"message":"No entries found"}
     return render(request, "fb_blog/search.html", context)
+
+def test_view(request, testobj):
+    print(type(testobj))
+    return HttpResponse("HELLO")
