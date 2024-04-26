@@ -8,6 +8,7 @@ from django.shortcuts import render
 
 from .models import BlogPost
 
+## Logic concerning home view
 def get_home_view_queryset() -> list:
     """Get the blogposts for the latest four days in the db"""
     queryset = []
@@ -23,69 +24,73 @@ def home_view(request):
     context = {"queryset":queryset, "month_id":queryset[0][0].created_at.date()}
     return render(request, "fb_blog/home.html", context)
 
-
-
+## Logic concerning month view
 def get_number_of_days_of_month(year: int, month: int) -> int:
     """Calculates the number of days of a specific month in a specific year"""
     return monthrange(year, month)[1]
 
+
+def get_year_and_month_from_month_id(month_id: str) -> list:
+    """Returns year and month as int from month_id string"""
+    return [int(x) for x in month_id.split("-")]
+
+
 def get_month_view_queryset(month_id: str) -> list:
     """Get all blogposts for a specific month"""
-    year = int(month_id[:4])
-    month = int(month_id[4:])
+    year, month = get_year_and_month_from_month_id(month_id)
     days_in_month = get_number_of_days_of_month(year, month)
     last_day_of_month = datetime(year, month, days_in_month).date()
     queryset = []
-
     delta = timedelta(days=1)
     for i in range(0, days_in_month):
         if BlogPost.objects.filter(created_at__date=(last_day_of_month - delta*i)):
             queryset.append(BlogPost.objects.filter(created_at__date=(last_day_of_month - delta*i)))
     return queryset
     
-def get_next_month(month_id: str) -> str:
-    month = int(month_id[4:])
-    year = int(month_id[:4])
+def get_next_month(year, month) -> str:
     if month == 12:
         month = 1
         year += 1
     else:
         month += 1
-    return f"{year}{month:02d}"
+    return f"{year}-{month:02d}"
 
-def get_previous_month(month_id: str) -> str:
-    month = int(month_id[4:])
-    year = int(month_id[:4])
+def get_previous_month(year, month) -> str:
     if month == 1:
         month = 12
         year -= 1
     else:
         month -= 1
-    return f"{year}{month:02d}"
+    return f"{year}-{month:02d}"
 
 def month_view(request, month_id):
     queryset = get_month_view_queryset(month_id)
-    previous_month = get_previous_month(month_id)
-    next_month = get_next_month(month_id)
+    year, month = get_year_and_month_from_month_id(month_id)
+    
+    previous_month = get_previous_month(year, month)
+    next_month = get_next_month(year, month)
+    
     context = {
-        "testobj":[{"key":"value"}],
         "queryset":queryset, 
         "next_month":next_month,
         "previous_month":previous_month,
         }
     return render(request, "fb_blog/month.html", context)
 
+## Logic concerning detail view
 def detail_view(request, post_id):
     post = BlogPost.objects.get(pk=post_id)
     context = {"post":post}
     return render(request, "fb_blog/detail.html", context)   
 
 
+## Logic concerning imprint view
 def imprint_view(request):
     """Returns imprint"""
     return render(request, "fb_blog/imprint.html") 
 
 
+## Logic concerning search view
 def assemble_posts(posts: list) -> list:
     """Assembles posts by the date they were created"""
     arranged_posts = []
@@ -115,7 +120,3 @@ def search_view(request):
     else:
         context = {"message":"No entries found"}
     return render(request, "fb_blog/search.html", context)
-
-def test_view(request, testobj):
-    print(type(testobj))
-    return HttpResponse("HELLO")
